@@ -84,7 +84,7 @@ class Word2VecKeras(object):
         x_train = [gensim.utils.simple_preprocess(text) for text in x_train]
 
         logging.info("Build & train Word2Vec model")
-        self.w2v_model = gensim.models.Word2Vec(min_count=self.w2v_min_count, window=self.w2v_window,size=self.w2v_size,workers=multiprocessing.cpu_count())
+        self.w2v_model = gensim.models.Word2Vec(min_count=self.w2v_min_count, window=self.w2v_window,workers=multiprocessing.cpu_count())
         self.w2v_model.build_vocab(x_train)
         self.w2v_model.train(x_train, total_examples=self.w2v_model.corpus_count, epochs=self.w2v_epochs)
         w2v_words = list(self.w2v_model.wv.vocab)
