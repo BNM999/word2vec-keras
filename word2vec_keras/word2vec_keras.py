@@ -84,9 +84,7 @@ class Word2VecKeras(object):
         x_train = [gensim.utils.simple_preprocess(text) for text in x_train]
 
         logging.info("Build & train Word2Vec model")
-        self.w2v_model = gensim.models.Word2Vec(min_count=self.w2v_min_count, window=self.w2v_window,
-                                                size=self.w2v_size,
-                                                workers=multiprocessing.cpu_count())
+        self.w2v_model = gensim.models.Word2Vec(min_count=self.w2v_min_count, window=self.w2v_window,size=self.w2v_size,workers=multiprocessing.cpu_count())
         self.w2v_model.build_vocab(x_train)
         self.w2v_model.train(x_train, total_examples=self.w2v_model.corpus_count, epochs=self.w2v_epochs)
         w2v_words = list(self.w2v_model.wv.vocab)
@@ -102,8 +100,7 @@ class Word2VecKeras(object):
         logging.info("Fit Tokenizer")
         self.tokenizer = Tokenizer()
         self.tokenizer.fit_on_texts(x_train)
-        x_train = keras.preprocessing.sequence.pad_sequences(self.tokenizer.texts_to_sequences(x_train),
-                                                             maxlen=self.k_max_sequence_len)
+        x_train = keras.preprocessing.sequence.pad_sequences(self.tokenizer.texts_to_sequences(x_train),maxlen=self.k_max_sequence_len)
         num_words = len(self.tokenizer.word_index) + 1
         logging.info("Number of unique words: %i" % num_words)
 
@@ -123,11 +120,7 @@ class Word2VecKeras(object):
         logging.info('y_train shape: %s' % str(y_train.shape))
 
         self.k_model = Sequential()
-        self.k_model.add(Embedding(vocab_size,
-                                   self.w2v_size,
-                                   weights=[embedding_matrix],
-                                   input_length=self.k_max_sequence_len,
-                                   trainable=False))
+        self.k_model.add(Embedding(vocab_size,self.w2v_size,weights=[embedding_matrix],input_length=self.k_max_sequence_len,trainable=False))
         self.k_model.add(LSTM(self.k_lstm_neurons, dropout=0.5, recurrent_dropout=0.2))
         for hidden_layer in self.k_hidden_layer_neurons:
             self.k_model.add(Dense(hidden_layer, activation='relu'))
